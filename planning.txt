@@ -1,0 +1,30 @@
+Page Class
+ Class Variables:
+ IDF Dictionary
+ PageRank List
+ IncomingLinks Dictionary
+
+ Instance Variables:
+ PageRank Mapping Number
+ PageRank Value
+ Incoming Links
+ Outgoing Links
+ Title
+ Url
+ Word Dictionary
+ Word List
+
+ Class Methods:
+ PageRank matrix calculations to get the PageRank List
+ writeIDFs - writes the IDFs to a file
+
+ Instance Methods:
+ saveData - writes the contents to files
+ readHTML - uses the URL attribute to get values for the other attributes
+
+ Constructor:
+ Page(URL)
+
+Crawler
+ Needs to use a queue
+ 
