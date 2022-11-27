@@ -1,14 +1,16 @@
-public class Result implements SearchResult{
-    String title;
-    double score;
+public class Result extends Page implements SearchResult{
+    double cosineSimilarity;
 
+    public Result() {
+        //cosine similarity
+    }
     @Override
     public String getTitle() {
-        return title;
+        return super.getTitle();
     }
 
     @Override
     public double getScore() {
-        return score;
+        return cosineSimilarity;
     }
 }
