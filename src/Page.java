@@ -115,6 +115,25 @@ public class Page {
     public void saveContents(File directory) {
         String cleanUrl = url.replace(":", "{").replace("/", "}");
         File thisPage = new File(directory.toString() + File.separator + cleanUrl);
+        thisPage.mkdir();
+        File tfFolder = new File(thisPage.toString() + File.separator + "tf");
+        tfFolder.mkdir();
+        File tfidfFolder = new File(thisPage.toString() + File.separator + "tfidf");
+        tfidfFolder.mkdir();
+        File outFolder = new File(thisPage.toString() + File.separator + "out");
+        outFolder.mkdir();
+        File inFolder = new File(thisPage.toString() + File.separator + "in");
+        inFolder.mkdir();
+        File titleFile = new File(thisPage.toString() + File.separator + "title.txt");
+        File pageRankFile = new File(thisPage.toString() + File.separator + "pagerank.txt");
+        try {
+            pageRankFile.createNewFile();
+            titleFile.createNewFile();
+        } catch (IOException e) {
+
+        }
+
+
     }
 
     public ArrayList<String> getOutgoingLinks() {
