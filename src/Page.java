@@ -1,10 +1,11 @@
-import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.*;
+import java.io.*;
 public class Page {
-    private static HashMap<String, ArrayList<String>> allIncomingLinks;
-    private static HashMap<String, Integer> allWords;
-    private static ArrayList<Double> pageRanks;
+    private static HashMap<String, ArrayList<String>> allIncomingLinks = new HashMap<>();
+    private static HashMap<String, Integer> allWordsFreq = new HashMap<>();
+    private static HashMap<String, Double> idfHashMap = new HashMap<>();
+    private static ArrayList<Double> pageRanks = new ArrayList<>();
     private static int totalPages = 0;
     private String url;
     private String title;
@@ -13,21 +14,28 @@ public class Page {
     private ArrayList<String> outgoingLinks;
     private ArrayList<String> incomingLinks;
     private HashMap<String, Double> tfHashMap;
+    private HashMap<String, Double> tfidfHashMap;
     private double pageRank;
 
+    public Page() {
+
+    }
     public Page(String url) {
         this.url = url;
-        totalPages++;
+        title = "";
+        wordFreq = new HashMap<>();
+        wordCount = 0;
+        outgoingLinks = new ArrayList<>();
+        incomingLinks = new ArrayList<>();
+        tfHashMap = new HashMap<>();
+        tfidfHashMap = new HashMap<>();
+        pageRank = 0.0;
     }
 
-    public void readAndSave() {
-        readContents();
-        saveContents();
-    }
-    private void readContents() {
-        String[] contents;
+    public void readContents() {
+        String[] contents = new String[0];
         try {
-            contents = WebRequester.readURL("http://people.scs.carleton.ca/~davidmckenney/fruits/N-0.html").split(">");
+            contents = WebRequester.readURL(url).split("<");
         }catch(MalformedURLException e){
             e.printStackTrace();
         } catch(IOException e){
@@ -37,19 +45,19 @@ public class Page {
         for (String element : contents) {
             if(element.length() == 0) {
                 continue;
-            } else if (element.substring(0, 6).equals("title>") || element.substring(0, 6).equals("title ")) {
+            } else if ((element.length() > 6) && (element.substring(0, 6).equals("title>") || element.substring(0, 6).equals("title "))) {
                 title = element.substring(element.indexOf(">")+1, element.length());
-            } else if (element.substring(0, 2).equals("p ") || element.substring(0, 2).equals("p>")) {
+            } else if ((element.length() > 2) && (element.substring(0, 2).equals("p ") || element.substring(0, 2).equals("p>"))) {
                 rawText += element.substring(element.indexOf(">")+1, element.length()) + " ";
             } else if (element.contains("href=\"")) {
                 String link = "";
-                for (int letter = element.indexOf("href\""); letter < element.length(); letter++) {
+                for (int letter = element.indexOf("href=\"")+6; letter < element.length(); letter++) {
                     if ((element.substring(letter, letter+1).equals("\""))) {
                         break;
                     }
                     link += element.substring(letter, letter+1);
                 }
-                outgoingLinks.add(link);
+                outgoingLinks.add(buildLink(link));
             }
         }
         String[] wordsList = rawText.replace("\n", " ").split(" ");
@@ -63,20 +71,69 @@ public class Page {
         }
 
         for (String word : wordFreq.keySet()) {
-            if (!allWords.containsKey(word)) {
-                allWords.put(word, 1);
+            if (!allWordsFreq.containsKey(word)) {
+                allWordsFreq.put(word, 1);
             } else {
-                allWords.put(word, allWords.get(word)+1);
+                allWordsFreq.put(word, allWordsFreq.get(word)+1);
             }
             tfHashMap.put(word, (double)wordFreq.get(word)/wordCount);
         }
-        
 
+        for(String link : outgoingLinks) {
+            if (!allIncomingLinks.containsKey(link)) {
+                ArrayList<String> temp = new ArrayList<>();
+                temp.add(url);
+                allIncomingLinks.put(link, temp);
+            } else {
+                ArrayList<String> temp = allIncomingLinks.get(link);
+                temp.add(url);
+                allIncomingLinks.put(link, temp);
+            }
+        }
+        totalPages++;
+    }
+
+    public String buildLink(String link) {
+        if (link.substring(0, 1).equals(".")) {
+            return url.substring(0, url.lastIndexOf("/")) + link.substring(1);
+        }
+        return link;
+    }
+
+    public void computeContents() {
+        incomingLinks = allIncomingLinks.get(url);
+        for (String word : allWordsFreq.keySet()) {
+            idfHashMap.put(word, (double)totalPages / (1+allWordsFreq.get(word)));
+        }
+
+        for (String word : tfHashMap.keySet()) {
+            tfidfHashMap.put(word, Math.log(tfHashMap.get(word)+1)/Math.log(2) * idfHashMap.get(word));
+        }
 
     }
 
-    private void saveContents() {
-
+    public void saveContents(File directory) {
+        String cleanUrl = url.replace(":", "{").replace("/", "}");
+        File thisPage = new File(directory.toString() + File.separator + cleanUrl);
     }
 
+    public ArrayList<String> getOutgoingLinks() {
+        return outgoingLinks;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public static int getTotalPages() {
+        return totalPages;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public String toString(){
+        return url;
+    }
 }
