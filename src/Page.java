@@ -113,6 +113,8 @@ public class Page {
     }
 
     public void saveContents(File directory) {
+
+
         String cleanUrl = url.replace(":", "{").replace("/", "}");
         File thisPage = new File(directory.toString() + File.separator + cleanUrl);
         thisPage.mkdir();
@@ -126,11 +128,31 @@ public class Page {
         inFolder.mkdir();
         File titleFile = new File(thisPage.toString() + File.separator + "title.txt");
         File pageRankFile = new File(thisPage.toString() + File.separator + "pagerank.txt");
+
+        
+        
+
         try {
             pageRankFile.createNewFile();
             titleFile.createNewFile();
-        } catch (IOException e) {
+            for(String s: incomingLinks){
+                title = s.substring(56, s.indexOf(".html"));
+                PrintWriter outy = new PrintWriter(new FileWriter(inFolder.getPath() + File.separator +title+".txt"));
+                outy.print(s);
+                outy.close();
+            }
+            for(String s: outgoingLinks){
+                title = s.substring(56, s.indexOf(".html"));
+                PrintWriter outy = new PrintWriter(new FileWriter(outFolder.getPath() + File.separator +title+".txt"));
+                outy.print(s);
+                outy.close();
+            }
 
+
+
+            
+        } catch (IOException e) {
+            System.out.println("Oh fuck");
         }
 
 
