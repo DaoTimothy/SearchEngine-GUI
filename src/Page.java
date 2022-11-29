@@ -127,9 +127,11 @@ public class Page {
         File titleFile = new File(thisPage.toString() + File.separator + "title");
         File pageRankFile = new File(thisPage.toString() + File.separator + "pagerank");
         try {
-            pageRankFile.createNewFile();
             FileWriter writer = new FileWriter(titleFile);
             writer.write(title);
+            writer.close();
+            writer = new FileWriter(pageRankFile);
+            writer.write(String.valueOf(pageRank));
             writer.close();
         } catch (IOException e) {
 

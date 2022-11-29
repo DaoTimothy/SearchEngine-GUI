@@ -49,6 +49,10 @@ public class Crawler {
             subFile.delete();
         }
     }
+
+    public File getDirectory() {
+        return directory;
+    }
     //for testing purposes, DELETE BEFORE SUBMITTING
     public static void main(String[] args) {
         Crawler c = new Crawler("PageResults");
