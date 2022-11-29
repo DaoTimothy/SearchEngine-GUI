@@ -30,6 +30,7 @@ public class Crawler {
             p.computeContents();
             p.saveContents(directory);
         }
+        Page.saveIDF(directory);
         return Page.getTotalPages();
     }
 

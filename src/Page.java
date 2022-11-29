@@ -124,16 +124,73 @@ public class Page {
         outFolder.mkdir();
         File inFolder = new File(thisPage.toString() + File.separator + "in");
         inFolder.mkdir();
-        File titleFile = new File(thisPage.toString() + File.separator + "title.txt");
-        File pageRankFile = new File(thisPage.toString() + File.separator + "pagerank.txt");
+        File titleFile = new File(thisPage.toString() + File.separator + "title");
+        File pageRankFile = new File(thisPage.toString() + File.separator + "pagerank");
         try {
             pageRankFile.createNewFile();
-            titleFile.createNewFile();
+            FileWriter writer = new FileWriter(titleFile);
+            writer.write(title);
+            writer.close();
         } catch (IOException e) {
 
         }
+        for (String word : tfHashMap.keySet()) {
+            File thisWord = new File(tfFolder.toString() + File.separator + word);
+            try {
+                FileWriter writer = new FileWriter(thisWord.toString());
+                writer.write(tfHashMap.get(word).toString());
+                writer.close();
+            } catch (IOException e) {
 
+            }
+        }
+        for (String word : tfidfHashMap.keySet()) {
+            File thisWord = new File(tfidfFolder.toString() + File.separator + word);
+            try {
+                FileWriter writer = new FileWriter(thisWord.toString());
+                writer.write(tfidfHashMap.get(word).toString());
+                writer.close();
+            } catch (IOException e) {
 
+            }
+        }
+
+        for (String link : outgoingLinks) {
+            String temp = link.replace(":", "{").replace("/", "}");
+            File thisLink = new File(outFolder.toString() + File.separator + temp);
+            try {
+                FileWriter writer = new FileWriter(thisLink.toString());
+                writer.write("");
+            } catch (IOException e) {
+
+            }
+        }
+
+        for (String link : incomingLinks) {
+            String temp = link.replace(":", "{").replace("/", "}");
+            File thisLink = new File(inFolder.toString() + File.separator + temp);
+            try {
+                FileWriter writer = new FileWriter(thisLink.toString());
+                writer.write("");
+            } catch (IOException e) {
+
+            }
+        }
+    }
+
+    public static void saveIDF(File directory) {
+        File idfFolder = new File(directory.toString() + File.separator + "idf folder");
+        idfFolder.mkdir();
+        for (String word : idfHashMap.keySet()) {
+            File thisWord = new File(idfFolder.toString() + File.separator + word);
+            try {
+                FileWriter writer = new FileWriter(thisWord);
+                writer.write(idfHashMap.get(word).toString());
+                writer.close();
+            } catch (IOException e) {
+
+            }
+        }
     }
 
     public ArrayList<String> getOutgoingLinks() {
