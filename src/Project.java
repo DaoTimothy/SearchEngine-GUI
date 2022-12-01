@@ -6,6 +6,7 @@ import java.util.Scanner;
 
 public class Project implements ProjectTester{
     Crawler c;
+    Search s;
     /*
     This method must delete any existing data that has been stored from any previous crawl.
     This method should also perform any other initialization needed by your system.
@@ -14,6 +15,7 @@ public class Project implements ProjectTester{
     public void initialize() {
         c = new Crawler("PageResults");
         c.resetData();
+        s = new Search("PageResults");
     }
 
     /*
@@ -32,14 +34,7 @@ public class Project implements ProjectTester{
     If no page with the given URL exists, returns null.
      */
     public List<String> getOutgoingLinks(String url) {
-        String cleanUrl = url.replace(":", "{").replace("/", "}");
-        File outFolder = new File(c.getDirectory() + File.separator + cleanUrl + File.separator + "out");
-        File[] fileArray = outFolder.listFiles();
-        ArrayList<String> result = new ArrayList<>();
-        for (File file : fileArray) {
-            result.add(file.toString().replace("{", ":").replace("}", "/"));
-        }
-        return result;
+        return s.getOutgoingLinks(url);
     }
 
     /*
@@ -48,14 +43,7 @@ public class Project implements ProjectTester{
     If no page with the given URL exists, returns null.
      */
     public List<String> getIncomingLinks(String url) {
-        String cleanUrl = url.replace(":", "{").replace("/", "}");
-        File inFolder = new File(c.getDirectory() + File.separator + cleanUrl + File.separator + "in");
-        File[] fileArray = inFolder.listFiles();
-        ArrayList<String> result = new ArrayList<>();
-        for (File file : fileArray) {
-            result.add(file.toString().replace("{", ":").replace("}", "/"));
-        }
-        return result;
+        return s.getIncomingLinks(url);
     }
 
     /*
@@ -63,14 +51,7 @@ public class Project implements ProjectTester{
     If no page with the given URL exists, returns -1.
      */
     public double getPageRank(String url) {
-        String cleanUrl = url.replace(":", "{").replace("/", "}");
-        File pageRankFile = new File(c.getDirectory().toString() + File.separator + cleanUrl + File.separator + "pagerank");
-        try {
-            Scanner scan = new Scanner(pageRankFile);
-            return Double.parseDouble(scan.nextLine());
-        } catch (IOException e){
-        }
-        return 0.0;
+        return s.getPageRank(url);
     }
 
     /*
@@ -78,13 +59,7 @@ public class Project implements ProjectTester{
     A word that did not show up during the crawl should have an IDF of 0.
      */
     public double getIDF(String word) {
-        File idfFile = new File(c.getDirectory().toString() + File.separator + "idf folder" + File.separator + word);
-        try {
-            Scanner scan = new Scanner(idfFile);
-            return Double.parseDouble(scan.nextLine());
-        } catch (IOException e){
-        }
-        return 0.0;
+        return s.getIDF(word);
     }
 
     /*
@@ -92,28 +67,14 @@ public class Project implements ProjectTester{
     If the word did not appear on the given page, the TF should be 0.
      */
     public double getTF(String url, String word) {
-        String cleanUrl = url.replace(":", "{").replace("/", "}");
-        File tfFile = new File(c.getDirectory().toString() + File.separator + cleanUrl + File.separator + "tf" + File.separator + word);
-        try {
-            Scanner scan = new Scanner(tfFile);
-            return Double.parseDouble(scan.nextLine());
-        } catch (IOException e){
-        }
-        return 0.0;
+        return s.getTF(url, word);
     }
 
     /*
     Returns the TF-IDF value of the given word within the page with the given URL.
      */
     public double getTFIDF(String url, String word) {
-        String cleanUrl = url.replace(":", "{").replace("/", "}");
-        File tfidfFile = new File(c.getDirectory().toString() + File.separator + cleanUrl + File.separator + "tfidf" + File.separator + word);
-        try {
-            Scanner scan = new Scanner(tfidfFile);
-            return Double.parseDouble(scan.nextLine());
-        } catch (IOException e){
-        }
-        return 0.0;
+        return s.getTFIDF(url, word);
     }
 
     /*

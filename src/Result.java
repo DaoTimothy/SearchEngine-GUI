@@ -1,10 +1,12 @@
-public class Result extends Page implements SearchResult{
+import java.util.ArrayList;
+public class Result extends Page implements SearchResult {
     double cosineSimilarity;
-    /*
-    public Result() {
-        //cosine similarity
+    ArrayList<Double> vector;
+    public Result(Page page) {
+        super(page);
+
     }
-    */
+
     @Override
     public String getTitle() {
         return super.getTitle();

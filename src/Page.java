@@ -32,6 +32,10 @@ public class Page {
         pageRank = 0.0;
     }
 
+    public Page(Page page) {
+        title = page.title;
+    }
+
     public void readContents() {
         String[] contents = new String[0];
         try {
