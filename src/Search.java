@@ -5,5 +5,7 @@ public class Search {
         directory = new File(directoryName);
     }
 
+    public void search(String phrase, boolean boost) {
 
+    }
 }
