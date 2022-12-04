@@ -98,7 +98,7 @@ public class Project implements ProjectTester{
         Project p = new Project();
         p.initialize();
         p.crawl("http://people.scs.carleton.ca/~davidmckenney/tinyfruits/N-0.html");
-        System.out.println(p.search("apple", false, 10));
+        System.out.println(p.search("apple banana orange", false, 10));
 
     }
 }

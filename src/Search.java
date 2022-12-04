@@ -46,11 +46,11 @@ public class Search extends SearchData{
             }
             pageResult.computeScore(boost, queryVector);
             for (int i = 0; i < results.size(); i++) {
-                if (pageResult.getScore() > results.get(i).getScore()) {
+                if (round(pageResult.getScore()) > round(results.get(i).getScore())) {
                     results.add(i, (SearchResult) pageResult);
                     results.remove(X);
                     break;
-                } else if (pageResult.getScore() == results.get(i).getScore() && pageResult.getTitle().compareTo(results.get(i).getTitle()) <= 0) {
+                } else if (round(pageResult.getScore()) == round(results.get(i).getScore()) && pageResult.getTitle().compareTo(results.get(i).getTitle()) <= 0) {
                     results.add(i, (SearchResult) pageResult);
                     results.remove(X);
                     break;
@@ -58,5 +58,9 @@ public class Search extends SearchData{
             }
         }
         return results;
+    }
+
+    public double round(Double d) {
+        return Math.round(d*1000.0)/1000.0;
     }
 }

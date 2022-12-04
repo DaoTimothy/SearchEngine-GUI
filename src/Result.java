@@ -19,9 +19,9 @@ public class Result extends Page implements SearchResult {
     }
 
     public void computeScore(Boolean boost, ArrayList<Double> queryVector) {
-        score = Math.round(computeCosineSimilarity(queryVector)*1000)/1000.0;
+        score = computeCosineSimilarity(queryVector);
         if (boost) {
-            score = Math.round(score*getPageRank()*1000)/1000.0;
+            score *= getPageRank();
         }
     }
     private double computeCosineSimilarity(ArrayList<Double> queryVector) {
