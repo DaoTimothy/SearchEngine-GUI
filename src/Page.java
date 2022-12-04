@@ -2,6 +2,7 @@ import java.net.MalformedURLException;
 import java.util.*;
 import java.io.*;
 public class Page {
+    private static HashMap<String, Page> allPages = new HashMap<>();
     private static HashMap<String, ArrayList<String>> allIncomingLinks = new HashMap<>();
     private static HashMap<String, Integer> allWordsFreq = new HashMap<>();
     private static HashMap<String, Double> idfHashMap = new HashMap<>();
@@ -30,9 +31,12 @@ public class Page {
         tfHashMap = new HashMap<>();
         tfidfHashMap = new HashMap<>();
         pageRank = 0.0;
+        allPages.put(url, this);
     }
 
     public Page(Page page) {
+
+        this.url = page.getUrl();
         title = page.title;
     }
 
@@ -198,6 +202,7 @@ public class Page {
             }
         }
     }
+    public static HashMap<String, Page> getAllPages() { return allPages; }
 
     public ArrayList<String> getOutgoingLinks() {
         return outgoingLinks;
@@ -216,6 +221,10 @@ public class Page {
     }
 
     public String toString(){
-        return url;
+        return "Page: " + url;
     }
+
+    public void setTitle(String title) { this.title = title; }
+
+    public double getPageRank() { return pageRank; }
 }

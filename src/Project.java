@@ -91,6 +91,14 @@ public class Project implements ProjectTester{
     A copy of this interface is included on the project's BrightSpace page.
      */
     public List<SearchResult> search(String query, boolean boost, int X) {
-        return null;
+        return s.search(query, boost, X);
+    }
+
+    public static void main(String[] args) {
+        Project p = new Project();
+        p.initialize();
+        p.crawl("http://people.scs.carleton.ca/~davidmckenney/tinyfruits/N-0.html");
+        System.out.println(p.search("apple", false, 10));
+
     }
 }

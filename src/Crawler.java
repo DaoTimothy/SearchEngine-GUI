@@ -53,10 +53,5 @@ public class Crawler {
     public File getDirectory() {
         return directory;
     }
-    //for testing purposes, DELETE BEFORE SUBMITTING
-    public static void main(String[] args) {
-        Crawler c = new Crawler("PageResults");
-        c.resetData();
-        System.out.println(c.crawl("http://people.scs.carleton.ca/~davidmckenney/tinyfruits/N-0.html"));
-    }
+
 }
