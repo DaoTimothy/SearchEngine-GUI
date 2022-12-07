@@ -127,13 +127,12 @@ public class Page {
         File inFolder = new File(thisPage.toString() + File.separator + "in");
         inFolder.mkdir();
         File titleFile = new File(thisPage.toString() + File.separator + "title.txt");
-        File pageRankFile = new File(thisPage.toString() + File.separator + "pagerank.txt");
+        //File pageRankFile = new File(thisPage.toString() + File.separator + "pagerank.txt");
 
         
         
 
         try {
-            pageRankFile.createNewFile();
             titleFile.createNewFile();
             for(String s: incomingLinks){
                 title = s.substring(56, s.indexOf(".html"));
@@ -147,12 +146,13 @@ public class Page {
                 outy.print(s);
                 outy.close();
             }
+            
 
 
 
             
         } catch (IOException e) {
-            System.out.println("Oh fuck");
+            //System.out.println("Oh fuck");
         }
 
 
@@ -176,5 +176,8 @@ public class Page {
 
     public String toString(){
         return url;
+    }
+    public static HashMap<String, ArrayList<String>> getIncomingLinksDict(){
+        return allIncomingLinks;
     }
 }

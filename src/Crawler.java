@@ -53,5 +53,7 @@ public class Crawler {
         Crawler c = new Crawler("PageResults");
         c.resetData();
         System.out.println(c.crawl("http://people.scs.carleton.ca/~davidmckenney/tinyfruits/N-0.html"));
+        System.out.println(PageRank.getPageRank());
+
     }
 }
