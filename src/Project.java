@@ -94,11 +94,4 @@ public class Project implements ProjectTester{
         return s.search(query, boost, X);
     }
 
-    public static void main(String[] args) {
-        Project p = new Project();
-        p.initialize();
-        p.crawl("http://people.scs.carleton.ca/~davidmckenney/tinyfruits/N-0.html");
-        System.out.println(p.search("apple banana orange", false, 10));
-
-    }
 }
