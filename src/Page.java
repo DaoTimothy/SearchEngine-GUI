@@ -2,6 +2,7 @@ import java.net.MalformedURLException;
 import java.util.*;
 import java.io.*;
 public class Page {
+    private static HashMap<String, Page> allPages = new HashMap<>();
     private static HashMap<String, ArrayList<String>> allIncomingLinks = new HashMap<>();
     private static HashMap<String, Integer> allWordsFreq = new HashMap<>();
     private static HashMap<String, Double> idfHashMap = new HashMap<>();
@@ -30,6 +31,13 @@ public class Page {
         tfHashMap = new HashMap<>();
         tfidfHashMap = new HashMap<>();
         pageRank = 0.0;
+        allPages.put(url, this);
+    }
+
+    public Page(Page page) {
+
+        this.url = page.getUrl();
+        title = page.title;
     }
 
     public void readContents() {
@@ -126,8 +134,16 @@ public class Page {
         outFolder.mkdir();
         File inFolder = new File(thisPage.toString() + File.separator + "in");
         inFolder.mkdir();
-        File titleFile = new File(thisPage.toString() + File.separator + "title.txt");
-        //File pageRankFile = new File(thisPage.toString() + File.separator + "pagerank.txt");
+        File titleFile = new File(thisPage.toString() + File.separator + "title");
+        File pageRankFile = new File(thisPage.toString() + File.separator + "pagerank");
+        try {
+            FileWriter writer = new FileWriter(titleFile);
+            writer.write(title);
+            writer.close();
+            writer = new FileWriter(pageRankFile);
+            writer.write(String.valueOf(pageRank));
+            writer.close();
+        } catch (IOException e) {
 
         
         
@@ -154,9 +170,65 @@ public class Page {
         } catch (IOException e) {
             //System.out.println("Oh fuck");
         }
+        for (String word : tfHashMap.keySet()) {
+            File thisWord = new File(tfFolder.toString() + File.separator + word);
+            try {
+                FileWriter writer = new FileWriter(thisWord.toString());
+                writer.write(tfHashMap.get(word).toString());
+                writer.close();
+            } catch (IOException e) {
 
+            }
+        }
+        for (String word : tfidfHashMap.keySet()) {
+            File thisWord = new File(tfidfFolder.toString() + File.separator + word);
+            try {
+                FileWriter writer = new FileWriter(thisWord.toString());
+                writer.write(tfidfHashMap.get(word).toString());
+                writer.close();
+            } catch (IOException e) {
 
+            }
+        }
+
+        for (String link : outgoingLinks) {
+            String temp = link.replace(":", "{").replace("/", "}");
+            File thisLink = new File(outFolder.toString() + File.separator + temp);
+            try {
+                FileWriter writer = new FileWriter(thisLink.toString());
+                writer.write("");
+            } catch (IOException e) {
+
+            }
+        }
+
+        for (String link : incomingLinks) {
+            String temp = link.replace(":", "{").replace("/", "}");
+            File thisLink = new File(inFolder.toString() + File.separator + temp);
+            try {
+                FileWriter writer = new FileWriter(thisLink.toString());
+                writer.write("");
+            } catch (IOException e) {
+
+            }
+        }
     }
+
+    public static void saveIDF(File directory) {
+        File idfFolder = new File(directory.toString() + File.separator + "idf folder");
+        idfFolder.mkdir();
+        for (String word : idfHashMap.keySet()) {
+            File thisWord = new File(idfFolder.toString() + File.separator + word);
+            try {
+                FileWriter writer = new FileWriter(thisWord);
+                writer.write(idfHashMap.get(word).toString());
+                writer.close();
+            } catch (IOException e) {
+
+            }
+        }
+    }
+    public static HashMap<String, Page> getAllPages() { return allPages; }
 
     public ArrayList<String> getOutgoingLinks() {
         return outgoingLinks;
@@ -175,9 +247,10 @@ public class Page {
     }
 
     public String toString(){
-        return url;
+        return "Page: " + url;
     }
-    public static HashMap<String, ArrayList<String>> getIncomingLinksDict(){
-        return allIncomingLinks;
-    }
+
+    public void setTitle(String title) { this.title = title; }
+
+    public double getPageRank() { return pageRank; }
 }

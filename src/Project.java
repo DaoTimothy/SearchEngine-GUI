@@ -1,7 +1,12 @@
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
 public class Project implements ProjectTester{
     Crawler c;
+    Search s;
     /*
     This method must delete any existing data that has been stored from any previous crawl.
     This method should also perform any other initialization needed by your system.
@@ -10,6 +15,7 @@ public class Project implements ProjectTester{
     public void initialize() {
         c = new Crawler("PageResults");
         c.resetData();
+        s = new Search("PageResults");
     }
 
     /*
@@ -28,7 +34,7 @@ public class Project implements ProjectTester{
     If no page with the given URL exists, returns null.
      */
     public List<String> getOutgoingLinks(String url) {
-        return null;
+        return s.getOutgoingLinks(url);
     }
 
     /*
@@ -37,7 +43,7 @@ public class Project implements ProjectTester{
     If no page with the given URL exists, returns null.
      */
     public List<String> getIncomingLinks(String url) {
-        return null;
+        return s.getIncomingLinks(url);
     }
 
     /*
@@ -45,7 +51,7 @@ public class Project implements ProjectTester{
     If no page with the given URL exists, returns -1.
      */
     public double getPageRank(String url) {
-        return 0.0;
+        return s.getPageRank(url);
     }
 
     /*
@@ -53,7 +59,7 @@ public class Project implements ProjectTester{
     A word that did not show up during the crawl should have an IDF of 0.
      */
     public double getIDF(String word) {
-        return 0.0;
+        return s.getIDF(word);
     }
 
     /*
@@ -61,14 +67,14 @@ public class Project implements ProjectTester{
     If the word did not appear on the given page, the TF should be 0.
      */
     public double getTF(String url, String word) {
-        return 0.0;
+        return s.getTF(url, word);
     }
 
     /*
     Returns the TF-IDF value of the given word within the page with the given URL.
      */
     public double getTFIDF(String url, String word) {
-        return 0.0;
+        return s.getTFIDF(url, word);
     }
 
     /*
@@ -85,6 +91,7 @@ public class Project implements ProjectTester{
     A copy of this interface is included on the project's BrightSpace page.
      */
     public List<SearchResult> search(String query, boolean boost, int X) {
-        return null;
+        return s.search(query, boost, X);
     }
+
 }

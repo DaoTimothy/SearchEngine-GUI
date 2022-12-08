@@ -22,13 +22,4 @@ public class WebRequester {
     If exceptions are thrown during your crawl, you should handle them gracefully.
     For example, add the URL to the queue again and retry later.
      */
-    public static void main(String[] args){
-        try {
-            System.out.println(WebRequester.readURL("http://people.scs.carleton.ca/~davidmckenney/fruits/N-0.html"));
-        }catch(MalformedURLException e){
-            e.printStackTrace();
-        }catch(IOException e){
-            e.printStackTrace();
-        }
-    }
 }

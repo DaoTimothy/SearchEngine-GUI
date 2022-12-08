@@ -30,6 +30,7 @@ public class Crawler {
             p.computeContents();
             p.saveContents(directory);
         }
+        Page.saveIDF(directory);
         return Page.getTotalPages();
     }
 
@@ -48,12 +49,9 @@ public class Crawler {
             subFile.delete();
         }
     }
-    //for testing purposes, DELETE BEFORE SUBMITTING
-    public static void main(String[] args) {
-        Crawler c = new Crawler("PageResults");
-        c.resetData();
-        System.out.println(c.crawl("http://people.scs.carleton.ca/~davidmckenney/tinyfruits/N-0.html"));
-        System.out.println(PageRank.getPageRank());
 
+    public File getDirectory() {
+        return directory;
     }
+
 }
