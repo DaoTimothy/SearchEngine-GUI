@@ -7,6 +7,7 @@ public class Page {
     private static HashMap<String, Double> idfHashMap = new HashMap<>();
     private static HashMap<Integer, String> idMap = new HashMap<>();
     private static ArrayList<ArrayList<Double>> pageRankVector = new ArrayList<>();
+    private static ArrayList<ArrayList<Double>> matrix = new ArrayList<>();
     private static int totalPages = 0;
     private String url;
     private String title;
@@ -119,6 +120,7 @@ public class Page {
 
     public static void computePageRanks() {
         createIdMap();
+        createMatrix();
         calculateFinalVector();
     }
 
@@ -206,8 +208,8 @@ public class Page {
             for(int i=0;i<pageRankVector.get(0).size();i++){
                 double rank= pageRankVector.get(0).get(i);
                 String url= idMap.get(i).replace(":", "{").replace("/", "}");
-                System.out.println(i);
-                //System.out.println(directory.getPath() + File.separator + url+ File.separator +"pagerank.txt");
+                
+               
                 PrintWriter outy = new PrintWriter(new FileWriter(directory.toString() + File.separator + url+ File.separator +"pagerank"));
                 outy.print(rank);
                 outy.close();
@@ -230,14 +232,14 @@ public class Page {
         idMap = map;
     }
 
-    private static ArrayList<ArrayList<Double>>createMatrix(){
-        ArrayList<ArrayList<Double>> matrix = new ArrayList<ArrayList<Double>>();
+    private static void createMatrix(){
+        ArrayList<ArrayList<Double>> matrix1 = new ArrayList<ArrayList<Double>>();
         double alpha =0.1;
         int yesCount=0;
         int notCount=0;
         for(Integer key: idMap.keySet()){
             ArrayList<Double> row = new  ArrayList<Double>();
-            //System.out.println(idmap.get(key));
+            
             String sidepage = idMap.get(key);
             for(int toprow=0; toprow<totalPages;toprow++){
                 String toppage= idMap.get(toprow);
@@ -265,31 +267,33 @@ public class Page {
             }
             yesCount = 0;
             notCount = 0;
-            matrix.add(row);
+            matrix1.add(row);
         }
-        return matrix;
+        
+        matrix=matrix1;
     }
 
     private static void calculateFinalVector(){
         double threshhold= 0.0001;
         double dist = 1;
         pageRankVector = new ArrayList<ArrayList<Double>> ();
-        ArrayList<ArrayList<Double>> matrix = createMatrix();
         ArrayList<ArrayList<Double>> oldVector= new ArrayList<ArrayList<Double>>();
         ArrayList<Double> temp= new ArrayList<Double>();
         for(int i=0;i<matrix.size();i++){
             temp.add(i,(double)(0));
         }
         oldVector.add(temp);
-        oldVector.get(0).set(1,(double)1);
+        oldVector.get(0).set(0,(double)1);
+        
         pageRankVector.add(dotProduct(oldVector));
-        // System.out.println(oldVector);
-        // System.out.println(newVector);
         while(dist>threshhold){
+            
             pageRankVector.set(0,dotProduct(pageRankVector));
 
             dist= euclidean_dist(pageRankVector,oldVector);
-            oldVector=pageRankVector;
+            oldVector.set(0,pageRankVector.get(0));
+            
+            
         }
     }
     private static double euclidean_dist(ArrayList<ArrayList<Double>> a, ArrayList<ArrayList<Double>> b){
@@ -297,14 +301,14 @@ public class Page {
         for(int i=0; i<a.get(0).size();i++){
             sum+=Math.pow((a.get(0).get(i)-b.get(0).get(i)),2);
         }
+      
         return Math.sqrt(sum);
     }
     private static ArrayList<Double> dotProduct(ArrayList<ArrayList<Double>> vector){
         ArrayList<Double> newVector= new ArrayList<Double> ();
-        ArrayList<ArrayList<Double>> matrix = createMatrix();
         double sum;
         int index;
-        //System.out.println(vector);
+        
         for(int column =0; column<vector.get(0).size();column++){
             sum=0;
             index=0;
@@ -312,11 +316,10 @@ public class Page {
             for(ArrayList<Double>row:matrix){
                 sum+=(row.get(column))*(vector.get(0).get(index));
 
-                //System.out.println(vector.get(0));
-                //System.out.println(sum);
+    
                 index++;
             }
-            //System.out.println(sum);
+            
             newVector.add((double)sum);
         }
 
