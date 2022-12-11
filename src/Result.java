@@ -2,10 +2,12 @@ import java.util.ArrayList;
 import java.io.*;
 public class Result extends Page implements SearchResult {
     private double score;
+    private double pageRank;
     private ArrayList<Double> vector;
 
-    public Result(String title) {
+    public Result(String title, double pageRank) {
         super.setTitle(title);
+        this.pageRank = pageRank;
         vector = new ArrayList<>();
     }
 
@@ -21,7 +23,7 @@ public class Result extends Page implements SearchResult {
     public void computeScore(Boolean boost, ArrayList<Double> queryVector) {
         score = computeCosineSimilarity(queryVector);
         if (boost) {
-            score *= getPageRank();
+            score *= pageRank;
         }
     }
     private double computeCosineSimilarity(ArrayList<Double> queryVector) {

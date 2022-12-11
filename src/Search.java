@@ -52,8 +52,9 @@ public class Search extends SearchData{
             } catch (IOException e) {
 
             }
-            Result pageResult = new Result(title);
             String url = fileUrl.toString().replace(getDirectory().toString(), "").replace("{",":").replace("}","/");
+            Result pageResult = new Result(title, getPageRank(url));
+
             for (String word : wordOrder) {
                 pageResult.appendVector(getTFIDF(url, word));
             }

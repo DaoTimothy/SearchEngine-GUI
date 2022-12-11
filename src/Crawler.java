@@ -16,7 +16,6 @@ public class Crawler {
             Page currentPage = new Page(pageQueue.poll());
             readPages.add(currentPage);
             currentPage.readContents();
-            System.out.println("At page " + currentPage.getTitle());
             enqueuedPages.put(currentPage.getUrl(), 0);
             ArrayList<String> outgoingLinks = currentPage.getOutgoingLinks();
             for (String link : outgoingLinks) {
@@ -30,7 +29,9 @@ public class Crawler {
             p.computeContents();
             p.saveContents(directory);
         }
-        Page.saveIDF(directory);
+        Page.computePageRanks();
+        Page.saveIDFandPageRank(directory);
+        System.out.println(Page.getPageRankVector());
         return Page.getTotalPages();
     }
 

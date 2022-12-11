@@ -5,7 +5,8 @@ public class Page {
     private static HashMap<String, ArrayList<String>> allIncomingLinks = new HashMap<>();
     private static HashMap<String, Integer> allWordsFreq = new HashMap<>();
     private static HashMap<String, Double> idfHashMap = new HashMap<>();
-    private static ArrayList<Double> pageRanks = new ArrayList<>();
+    private static HashMap<Integer, String> idMap = new HashMap<>();
+    private static ArrayList<ArrayList<Double>> pageRankVector = new ArrayList<>();
     private static int totalPages = 0;
     private String url;
     private String title;
@@ -15,7 +16,6 @@ public class Page {
     private ArrayList<String> incomingLinks;
     private HashMap<String, Double> tfHashMap;
     private HashMap<String, Double> tfidfHashMap;
-    private double pageRank;
 
     public Page() {
 
@@ -29,7 +29,6 @@ public class Page {
         incomingLinks = new ArrayList<>();
         tfHashMap = new HashMap<>();
         tfidfHashMap = new HashMap<>();
-        pageRank = 0.0;
     }
 
     public Page(Page page) {
@@ -66,7 +65,8 @@ public class Page {
                 outgoingLinks.add(buildLink(link));
             }
         }
-        String[] wordsList = rawText.replace("\n", " ").split(" ");
+        String[] wordsList = rawText.replace("\n", " ").strip().split(" ");
+
         for (String word : wordsList) {
             wordCount++;
             if (!wordFreq.containsKey(word)) {
@@ -109,14 +109,19 @@ public class Page {
     public void computeContents() {
         incomingLinks = allIncomingLinks.get(url);
         for (String word : allWordsFreq.keySet()) {
-            idfHashMap.put(word, (double)totalPages / (1+allWordsFreq.get(word)));
+            idfHashMap.put(word, Math.log((double)totalPages / (1+allWordsFreq.get(word)))/Math.log(2));
         }
 
         for (String word : tfHashMap.keySet()) {
             tfidfHashMap.put(word, Math.log(tfHashMap.get(word)+1)/Math.log(2) * idfHashMap.get(word));
         }
-
     }
+
+    public static void computePageRanks() {
+        createIdMap();
+        calculateFinalVector();
+    }
+
 
     public void saveContents(File directory) {
         String cleanUrl = url.replace(":", "{").replace("/", "}");
@@ -135,9 +140,6 @@ public class Page {
         try {
             FileWriter writer = new FileWriter(titleFile);
             writer.write(title);
-            writer.close();
-            writer = new FileWriter(pageRankFile);
-            writer.write(String.valueOf(pageRank));
             writer.close();
         } catch (IOException e) {
 
@@ -186,7 +188,7 @@ public class Page {
         }
     }
 
-    public static void saveIDF(File directory) {
+    public static void saveIDFandPageRank(File directory) {
         File idfFolder = new File(directory.toString() + File.separator + "idf folder");
         idfFolder.mkdir();
         for (String word : idfHashMap.keySet()) {
@@ -199,8 +201,127 @@ public class Page {
 
             }
         }
+
+        try{
+            for(int i=0;i<pageRankVector.get(0).size();i++){
+                double rank= pageRankVector.get(0).get(i);
+                String url= idMap.get(i).replace(":", "{").replace("/", "}");
+                System.out.println(i);
+                //System.out.println(directory.getPath() + File.separator + url+ File.separator +"pagerank.txt");
+                PrintWriter outy = new PrintWriter(new FileWriter(directory.toString() + File.separator + url+ File.separator +"pagerank"));
+                outy.print(rank);
+                outy.close();
+
+            }
+        }
+        catch (IOException e) {
+
+        }
     }
 
+    public static void createIdMap(){
+        HashMap<Integer,String> map= new HashMap<Integer,String>();
+        int count = 0;
+
+        for(String key : allIncomingLinks.keySet()){
+            map.put(count,key);
+            count++;
+        }
+        idMap = map;
+    }
+
+    private static ArrayList<ArrayList<Double>>createMatrix(){
+        ArrayList<ArrayList<Double>> matrix = new ArrayList<ArrayList<Double>>();
+        double alpha =0.1;
+        int yesCount=0;
+        int notCount=0;
+        for(Integer key: idMap.keySet()){
+            ArrayList<Double> row = new  ArrayList<Double>();
+            //System.out.println(idmap.get(key));
+            String sidepage = idMap.get(key);
+            for(int toprow=0; toprow<totalPages;toprow++){
+                String toppage= idMap.get(toprow);
+                if(allIncomingLinks.get(toppage).contains(sidepage)){
+                    row.add((double)1);
+                    yesCount++;
+                    notCount=0;
+                }
+                else{
+                    row.add((double)0);
+                    notCount++;
+                    if(notCount==totalPages){
+                        row.clear();
+                        for(int i=0;i<totalPages;i++){
+                            row.add((double)1/totalPages);
+                        }
+                    }
+                }
+            }
+            for(int i=0;i<totalPages;i++){
+                if(row.get(i)==1){
+                    row.set(i, (double)1/yesCount);
+                }
+                row.set(i, (double)row.get(i)*(1-alpha)+alpha/totalPages);
+            }
+            yesCount = 0;
+            notCount = 0;
+            matrix.add(row);
+        }
+        return matrix;
+    }
+
+    private static void calculateFinalVector(){
+        double threshhold= 0.0001;
+        double dist = 1;
+        pageRankVector = new ArrayList<ArrayList<Double>> ();
+        ArrayList<ArrayList<Double>> matrix = createMatrix();
+        ArrayList<ArrayList<Double>> oldVector= new ArrayList<ArrayList<Double>>();
+        ArrayList<Double> temp= new ArrayList<Double>();
+        for(int i=0;i<matrix.size();i++){
+            temp.add(i,(double)(0));
+        }
+        oldVector.add(temp);
+        oldVector.get(0).set(1,(double)1);
+        pageRankVector.add(dotProduct(oldVector));
+        // System.out.println(oldVector);
+        // System.out.println(newVector);
+        while(dist>threshhold){
+            pageRankVector.set(0,dotProduct(pageRankVector));
+
+            dist= euclidean_dist(pageRankVector,oldVector);
+            oldVector=pageRankVector;
+        }
+    }
+    private static double euclidean_dist(ArrayList<ArrayList<Double>> a, ArrayList<ArrayList<Double>> b){
+        double sum=0;
+        for(int i=0; i<a.get(0).size();i++){
+            sum+=Math.pow((a.get(0).get(i)-b.get(0).get(i)),2);
+        }
+        return Math.sqrt(sum);
+    }
+    private static ArrayList<Double> dotProduct(ArrayList<ArrayList<Double>> vector){
+        ArrayList<Double> newVector= new ArrayList<Double> ();
+        ArrayList<ArrayList<Double>> matrix = createMatrix();
+        double sum;
+        int index;
+        //System.out.println(vector);
+        for(int column =0; column<vector.get(0).size();column++){
+            sum=0;
+            index=0;
+
+            for(ArrayList<Double>row:matrix){
+                sum+=(row.get(column))*(vector.get(0).get(index));
+
+                //System.out.println(vector.get(0));
+                //System.out.println(sum);
+                index++;
+            }
+            //System.out.println(sum);
+            newVector.add((double)sum);
+        }
+
+        return newVector;
+    }
     public ArrayList<String> getOutgoingLinks() {
         return outgoingLinks;
     }
@@ -223,5 +344,7 @@ public class Page {
 
     public void setTitle(String title) { this.title = title; }
 
-    public double getPageRank() { return pageRank; }
+    public static ArrayList<ArrayList<Double>> getPageRankVector() {
+        return pageRankVector;
+    }
 }

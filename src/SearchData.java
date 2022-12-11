@@ -16,8 +16,11 @@ public abstract class SearchData {
         File outFolder = new File(directory + File.separator + cleanUrl + File.separator + "out");
         File[] fileArray = outFolder.listFiles();
         ArrayList<String> result = new ArrayList<>();
+        if (!outFolder.exists()) {
+            return null;
+        }
         for (File file : fileArray) {
-            result.add(file.toString().replace("{", ":").replace("}", "/"));
+            result.add(file.getName().replace("{", ":").replace("}", "/"));
         }
         return result;
     }
@@ -32,8 +35,11 @@ public abstract class SearchData {
         File inFolder = new File(directory + File.separator + cleanUrl + File.separator + "in");
         File[] fileArray = inFolder.listFiles();
         ArrayList<String> result = new ArrayList<>();
+        if (!inFolder.exists()) {
+            return null;
+        }
         for (File file : fileArray) {
-            result.add(file.toString().replace("{", ":").replace("}", "/"));
+            result.add(file.getName().replace("{", ":").replace("}", "/"));
         }
         return result;
     }
