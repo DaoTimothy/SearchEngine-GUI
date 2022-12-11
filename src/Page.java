@@ -271,25 +271,25 @@ public class Page {
     }
 
     private static void calculateFinalVector(){
-        double threshhold= 0.0001;
+        double threshhold = 0.0001;
         double dist = 1;
         pageRankVector = new ArrayList<ArrayList<Double>> ();
-        ArrayList<ArrayList<Double>> matrix = createMatrix();
+        ArrayList<ArrayList<Double>> matrix = new ArrayList<ArrayList<Double>>(createMatrix());
         ArrayList<ArrayList<Double>> oldVector= new ArrayList<ArrayList<Double>>();
-        ArrayList<Double> temp= new ArrayList<Double>();
+        ArrayList<Double> temp = new ArrayList<Double>();
         for(int i=0;i<matrix.size();i++){
             temp.add(i,0.0);
         }
-        oldVector.add(temp);
+        oldVector.add(new ArrayList<>(temp));
         oldVector.get(0).set(1,1.0);
-        pageRankVector.add(dotProduct(oldVector));
+        pageRankVector.add(new ArrayList<>(dotProduct(oldVector)));
         // System.out.println(oldVector);
         // System.out.println(newVector);
         while(dist>threshhold){
-            pageRankVector.set(0,dotProduct(pageRankVector));
+            pageRankVector.set(0,new ArrayList<Double>(dotProduct(pageRankVector)));
 
             dist = euclidean_dist(pageRankVector,oldVector);
-            oldVector=pageRankVector;
+            oldVector = new ArrayList<ArrayList<Double>>(pageRankVector);
         }
     }
     private static double euclidean_dist(ArrayList<ArrayList<Double>> a, ArrayList<ArrayList<Double>> b){

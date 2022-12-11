@@ -31,7 +31,6 @@ public class Crawler {
         }
         Page.computePageRanks();
         Page.saveIDFandPageRank(directory);
-        System.out.println(Page.createMatrix());
         return Page.getTotalPages();
     }
 
