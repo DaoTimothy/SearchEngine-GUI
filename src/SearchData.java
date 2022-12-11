@@ -56,7 +56,7 @@ public abstract class SearchData {
             return Double.parseDouble(scan.nextLine());
         } catch (IOException e){
         }
-        return 0.0;
+        return -1.0;
     }
 
     /*

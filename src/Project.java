@@ -18,11 +18,6 @@ public class Project implements ProjectTester{
         s = new Search("PageResults");
     }
 
-    public void initializeForGUI() {
-        c = new Crawler("PageResults");
-        s = new Search("PageResults");
-    }
-
     /*
     This method performs a crawl starting at the given seed URL.
     It should visit each page it can find once.

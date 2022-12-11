@@ -48,8 +48,3 @@ expected = 0.12477353391590358
 result = 0.14680468749999998
 
 
-Passed Test #33 checking page rank for http://people.scs.carleton.ca/~davidmckenney/tinyfruits/N.html
-expected = -1.0
-result = 0.0
-
-

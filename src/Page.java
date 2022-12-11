@@ -220,7 +220,7 @@ public class Page {
     }
 
     public static void createIdMap(){
-        HashMap<Integer,String> map= new HashMap<Integer,String>();
+        HashMap<Integer,String> map = new HashMap<Integer,String>();
         int count = 0;
 
         for(String key : allIncomingLinks.keySet()){
@@ -232,36 +232,36 @@ public class Page {
 
     private static ArrayList<ArrayList<Double>>createMatrix(){
         ArrayList<ArrayList<Double>> matrix = new ArrayList<ArrayList<Double>>();
-        double alpha =0.1;
-        int yesCount=0;
-        int notCount=0;
+        double alpha = 0.1;
+        int yesCount = 0;
+        int notCount = 0;
         for(Integer key: idMap.keySet()){
-            ArrayList<Double> row = new  ArrayList<Double>();
+            ArrayList<Double> row = new ArrayList<Double>();
             //System.out.println(idmap.get(key));
             String sidepage = idMap.get(key);
-            for(int toprow=0; toprow<totalPages;toprow++){
-                String toppage= idMap.get(toprow);
+            for(int toprow = 0; toprow < totalPages; toprow++){
+                String toppage = idMap.get(toprow);
                 if(allIncomingLinks.get(toppage).contains(sidepage)){
-                    row.add((double)1);
+                    row.add(1.0);
                     yesCount++;
-                    notCount=0;
+                    notCount = 0;
                 }
                 else{
-                    row.add((double)0);
+                    row.add(0.0);
                     notCount++;
-                    if(notCount==totalPages){
-                        row.clear();
-                        for(int i=0;i<totalPages;i++){
-                            row.add((double)1/totalPages);
+                    if(notCount == totalPages){
+                        row = new ArrayList<Double>();
+                        for(int i = 0; i < totalPages; i++){
+                            row.add(1.0/(double)totalPages);
                         }
                     }
                 }
             }
-            for(int i=0;i<totalPages;i++){
-                if(row.get(i)==1){
-                    row.set(i, (double)1/yesCount);
+            for(int i = 0; i < totalPages; i++){
+                if(row.get(i) == 1.0){
+                    row.set(i, 1.0/(double)yesCount);
                 }
-                row.set(i, (double)row.get(i)*(1-alpha)+alpha/totalPages);
+                row.set(i, ((double)row.get(i)*(1.0-alpha)) + (alpha/(double)totalPages));
             }
             yesCount = 0;
             notCount = 0;
@@ -278,26 +278,26 @@ public class Page {
         ArrayList<ArrayList<Double>> oldVector= new ArrayList<ArrayList<Double>>();
         ArrayList<Double> temp= new ArrayList<Double>();
         for(int i=0;i<matrix.size();i++){
-            temp.add(i,(double)(0));
+            temp.add(i,0.0);
         }
         oldVector.add(temp);
-        oldVector.get(0).set(1,(double)1);
+        oldVector.get(0).set(1,1.0);
         pageRankVector.add(dotProduct(oldVector));
         // System.out.println(oldVector);
         // System.out.println(newVector);
         while(dist>threshhold){
             pageRankVector.set(0,dotProduct(pageRankVector));
 
-            dist= euclidean_dist(pageRankVector,oldVector);
+            dist = euclidean_dist(pageRankVector,oldVector);
             oldVector=pageRankVector;
         }
     }
     private static double euclidean_dist(ArrayList<ArrayList<Double>> a, ArrayList<ArrayList<Double>> b){
-        double sum=0;
-        for(int i=0; i<a.get(0).size();i++){
-            sum+=Math.pow((a.get(0).get(i)-b.get(0).get(i)),2);
+        double sum = 0;
+        for(int i = 0; i < a.get(0).size(); i++){
+            sum += Math.pow((a.get(0).get(i)-b.get(0).get(i)), 2.0);
         }
-        return Math.sqrt(sum);
+        return (double) Math.sqrt(sum);
     }
     private static ArrayList<Double> dotProduct(ArrayList<ArrayList<Double>> vector){
         ArrayList<Double> newVector= new ArrayList<Double> ();
@@ -305,8 +305,8 @@ public class Page {
         double sum;
         int index;
         //System.out.println(vector);
-        for(int column =0; column<vector.get(0).size();column++){
-            sum=0;
+        for(int column = 0; column<vector.get(0).size();column++){
+            sum = 0.0;
             index=0;
 
             for(ArrayList<Double>row:matrix){
@@ -317,7 +317,7 @@ public class Page {
                 index++;
             }
             //System.out.println(sum);
-            newVector.add((double)sum);
+            newVector.add(sum);
         }
 
         return newVector;
