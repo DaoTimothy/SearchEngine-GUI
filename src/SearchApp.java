@@ -9,7 +9,9 @@ public class SearchApp extends Application {
     Search model;
 
     public SearchApp() {
+        //model = new Search("PageResults");
         model = new Search("PageResults");
+
     }
 
     public static void main(String[] args) {

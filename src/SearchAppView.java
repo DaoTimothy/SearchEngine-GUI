@@ -55,7 +55,7 @@ public class SearchAppView extends Pane {
     }
 
     public void update(Search model, String query, boolean boost, int n) {
-        ArrayList<SearchResult> results = model.search(query, boost, n);
+        List<SearchResult> results = model.search(query, boost, n);
         resultTitles.getItems().clear();
         resultScores.getItems().clear();
         for (int i = 0; i < results.size(); i++) {

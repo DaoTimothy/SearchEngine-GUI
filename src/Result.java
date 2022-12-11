@@ -4,8 +4,8 @@ public class Result extends Page implements SearchResult {
     private double score;
     private ArrayList<Double> vector;
 
-    public Result(Page page) {
-        super(page);
+    public Result(String title) {
+        super.setTitle(title);
         vector = new ArrayList<>();
     }
 

@@ -1,6 +1,7 @@
 import java.io.*;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Scanner;
 
 public class Search extends SearchData{
     public Search(String path) {
@@ -32,17 +33,29 @@ public class Search extends SearchData{
             queryVector.add(tfidfHashmap.get(word));
         }
 
-        HashMap<String, Page> allPages = Page.getAllPages();
+        File[] allPages = getDirectory().listFiles();
+
         ArrayList<SearchResult> results = new ArrayList<>();
         for (int i = 0; i < X; i++) {
             Result blank = new Result(-1);
             results.add((SearchResult)blank);
         }
-        for (String url : allPages.keySet()) {
-            Result pageResult = new Result(allPages.get(url));
+        for (File fileUrl : allPages) {
+            if(fileUrl.toString().contains(" ")) {
+                continue;
+            }
+            File titleFile = new File(fileUrl.toString() + File.separator + "title");
+            String title = "";
+            try {
+                Scanner s = new Scanner(titleFile);
+                title = s.nextLine();
+            } catch (IOException e) {
 
+            }
+            Result pageResult = new Result(title);
+            String url = fileUrl.toString().replace(getDirectory().toString(), "").replace("{",":").replace("}","/");
             for (String word : wordOrder) {
-                pageResult.appendVector(getTFIDF(pageResult.getUrl(), word));
+                pageResult.appendVector(getTFIDF(url, word));
             }
             pageResult.computeScore(boost, queryVector);
             for (int i = 0; i < results.size(); i++) {
