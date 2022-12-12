@@ -206,7 +206,6 @@ public class Page {
             for(int i=0;i<pageRankVector.get(0).size();i++){
                 double rank= pageRankVector.get(0).get(i);
                 String url= idMap.get(i).replace(":", "{").replace("/", "}");
-                System.out.println(i);
                 //System.out.println(directory.getPath() + File.separator + url+ File.separator +"pagerank.txt");
                 PrintWriter outy = new PrintWriter(new FileWriter(directory.toString() + File.separator + url+ File.separator +"pagerank"));
                 outy.print(rank);
