@@ -16,10 +16,8 @@ public class Page {
     private ArrayList<String> incomingLinks;
     private HashMap<String, Double> tfHashMap;
     private HashMap<String, Double> tfidfHashMap;
+    private double pageRank;
 
-    public Page() {
-
-    }
     public Page(String url) {
         this.url = url;
         title = "";
@@ -29,12 +27,12 @@ public class Page {
         incomingLinks = new ArrayList<>();
         tfHashMap = new HashMap<>();
         tfidfHashMap = new HashMap<>();
+        pageRank = 0;
     }
 
-    public Page(Page page) {
-
-        this.url = page.getUrl();
-        title = page.title;
+    public Page(String title, Double pageRank) {
+        this.title = title;
+        this.pageRank = pageRank;
     }
 
     public void readContents() {
@@ -336,12 +334,12 @@ public class Page {
     public String getUrl() {
         return url;
     }
+    public double getPageRank() {  return pageRank; }
 
     public String toString(){
         return "Page: " + url;
     }
 
-    public void setTitle(String title) { this.title = title; }
 
     public static ArrayList<ArrayList<Double>> getPageRankVector() {
         return pageRankVector;

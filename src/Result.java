@@ -2,18 +2,17 @@ import java.util.ArrayList;
 import java.io.*;
 public class Result extends Page implements SearchResult {
     private double score;
-    private double pageRank;
     private ArrayList<Double> vector;
 
     public Result(String title, double pageRank) {
-        super.setTitle(title);
-        this.pageRank = pageRank;
+        super(title, pageRank);
         vector = new ArrayList<>();
     }
 
+    //Used to create placeholder result objects
     public Result(double score) {
+        super("", 0.0);
         this.score = score;
-        super.setTitle("");
     }
 
     public void appendVector(double tfidf) {
@@ -23,7 +22,7 @@ public class Result extends Page implements SearchResult {
     public void computeScore(Boolean boost, ArrayList<Double> queryVector) {
         score = computeCosineSimilarity(queryVector);
         if (boost) {
-            score *= pageRank;
+            score *= getPageRank();
         }
     }
     private double computeCosineSimilarity(ArrayList<Double> queryVector) {
