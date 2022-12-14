@@ -1,10 +1,10 @@
 import java.util.*;
 import java.io.*;
-public class Crawler {
-    private File directory;
+public class Crawler extends FileSystem {
+
 
     public Crawler(String directoryName) {
-        directory = new File(directoryName);
+        super(new File(directoryName));
     }
 
     public int crawl(String seed) {
@@ -27,18 +27,18 @@ public class Crawler {
         }
         for (Page p : readPages) {
             p.computeContents();
-            p.saveContents(directory);
+            p.saveContents(getDirectory());
         }
         Page.computePageRanks();
-        Page.saveIDFandPageRank(directory);
+        Page.saveIDFandPageRank(getDirectory());
         return Page.getTotalPages();
     }
 
     public void resetData() {
-        if (directory.exists()) {
-            deleteDirectory(directory);
+        if (getDirectory().exists()) {
+            deleteDirectory(getDirectory());
         }
-        directory.mkdir();
+        getDirectory().mkdir();
     }
 
     public void deleteDirectory(File file) {
@@ -49,9 +49,4 @@ public class Crawler {
             subFile.delete();
         }
     }
-
-    public File getDirectory() {
-        return directory;
-    }
-
 }

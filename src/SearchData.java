@@ -4,16 +4,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-public abstract class SearchData {
-    private File directory;
-
+public abstract class SearchData extends FileSystem {
     protected SearchData(String path) {
-        directory = new File(path);
+        super(new File(path));
     }
 
     public List<String> getOutgoingLinks(String url) {
         String cleanUrl = url.replace(":", "{").replace("/", "}");
-        File outFolder = new File(directory + File.separator + cleanUrl + File.separator + "out");
+        File outFolder = new File(getDirectory() + File.separator + cleanUrl + File.separator + "out");
         File[] fileArray = outFolder.listFiles();
         ArrayList<String> result = new ArrayList<>();
         if (!outFolder.exists()) {
@@ -32,7 +30,7 @@ public abstract class SearchData {
      */
     public List<String> getIncomingLinks(String url) {
         String cleanUrl = url.replace(":", "{").replace("/", "}");
-        File inFolder = new File(directory + File.separator + cleanUrl + File.separator + "in");
+        File inFolder = new File(getDirectory() + File.separator + cleanUrl + File.separator + "in");
         File[] fileArray = inFolder.listFiles();
         ArrayList<String> result = new ArrayList<>();
         if (!inFolder.exists()) {
@@ -50,7 +48,7 @@ public abstract class SearchData {
      */
     public double getPageRank(String url) {
         String cleanUrl = url.replace(":", "{").replace("/", "}");
-        File pageRankFile = new File(directory.toString() + File.separator + cleanUrl + File.separator + "pagerank");
+        File pageRankFile = new File(getDirectory().toString() + File.separator + cleanUrl + File.separator + "pagerank");
         try {
             Scanner scan = new Scanner(pageRankFile);
             return Double.parseDouble(scan.nextLine());
@@ -64,7 +62,7 @@ public abstract class SearchData {
     A word that did not show up during the crawl should have an IDF of 0.
      */
     public double getIDF(String word) {
-        File idfFile = new File(directory.toString() + File.separator + "idf folder" + File.separator + word);
+        File idfFile = new File(getDirectory().toString() + File.separator + "idf folder" + File.separator + word);
         try {
             Scanner scan = new Scanner(idfFile);
             return Double.parseDouble(scan.nextLine());
@@ -79,7 +77,7 @@ public abstract class SearchData {
      */
     public double getTF(String url, String word) {
         String cleanUrl = url.replace(":", "{").replace("/", "}");
-        File tfFile = new File(directory.toString() + File.separator + cleanUrl + File.separator + "tf" + File.separator + word);
+        File tfFile = new File(getDirectory().toString() + File.separator + cleanUrl + File.separator + "tf" + File.separator + word);
         try {
             Scanner scan = new Scanner(tfFile);
             return Double.parseDouble(scan.nextLine());
@@ -93,16 +91,12 @@ public abstract class SearchData {
      */
     public double getTFIDF(String url, String word) {
         String cleanUrl = url.replace(":", "{").replace("/", "}");
-        File tfidfFile = new File(directory.toString() + File.separator + cleanUrl + File.separator + "tfidf" + File.separator + word);
+        File tfidfFile = new File(getDirectory().toString() + File.separator + cleanUrl + File.separator + "tfidf" + File.separator + word);
         try {
             Scanner scan = new Scanner(tfidfFile);
             return Double.parseDouble(scan.nextLine());
         } catch (IOException e){
         }
         return 0.0;
-    }
-
-    public File getDirectory() {
-        return directory;
     }
 }
