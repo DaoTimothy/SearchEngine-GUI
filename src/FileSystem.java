@@ -1,6 +1,6 @@
 import java.io.File;
 
-public class FileSystem {
+public abstract class FileSystem {
     private File directory;
 
     protected FileSystem(File directory) {
