@@ -97,7 +97,7 @@ public class Project implements ProjectTester{
     public static void main(String[] args) {
         Project p = new Project();
         p.initialize();
-        p.crawl("http://people.scs.carleton.ca/~davidmckenney/tinyfruits/N-0.html");
+        p.crawl("http://people.scs.carleton.ca/~davidmckenney/tinyfruits/N-0.html"); //change the url to your liking
     }
 
 }

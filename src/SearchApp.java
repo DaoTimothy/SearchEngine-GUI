@@ -42,8 +42,12 @@ public class SearchApp extends Application {
                 view.update(model, view.getSearchBox().getText(), view.getPageRankToggle().isSelected(), 10);
             }
         });
+        try {
+            view.update(model, query, boost, 10);
+        } catch (NullPointerException e) {
+            System.out.println("No information has been crawled, please crawl information before attempting to run the GUI.");
+        }
 
-        view.update(model, query, boost, 10);
 
 
 
